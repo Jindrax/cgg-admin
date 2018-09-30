@@ -60,7 +60,7 @@ var moment = require("moment");
 moment.locale("es");
 export default {
   name: "PageIndex",
-  props: ["socket"],
+  props: ["socket", "usuario"],
   data() {
     return {
       descripcion: "",
@@ -122,7 +122,8 @@ export default {
           descripcion: this.descripcion,
           unidades: this.unidades,
           precio_venta: this.precio_venta,
-          precio_compra: this.precio_compra
+          precio_compra: this.precio_compra,
+          creador: this.usuario.id
         },
         (response, jwRes) => {
           if (jwRes.statusCode != 200) {
@@ -163,7 +164,8 @@ export default {
         {
           itemID: item.id,
           unidades: this.unidades_restock,
-          precio_compra: this.precio_compra_restock
+          precio_compra: this.precio_compra_restock,
+          comprador: this.usuario.id
         },
         (response, jwRes) => {
           this.item_restock = "";

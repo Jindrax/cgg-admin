@@ -18,10 +18,20 @@
           <q-toggle v-model="vip" />
         </q-field>
         <br>
+        <q-field label="Operario" v-if="usuario.admin">
+          <q-toggle v-model="op" />
+        </q-field>
+        <br v-if="usuario.admin">
+        <q-field label="Admin" v-if="usuario.admin">
+          <q-toggle v-model="admin" />
+        </q-field>
+        <br v-if="usuario.admin">
         <q-btn icon="create" label="Crear" style="width: 100%" @click="newCliente" color="primary" />
       </q-card-main>
     </q-card>
     <br>
+    <br>
+    <q-search hide-underline color="secondary" v-model="filter" style="width: 100%" @input="val => {search(filter);}"/>
     <q-table v-if="tableData != null" :data="tableData" :columns="columns" row-key="id">
       <q-tr slot="body" slot-scope="props" :props="props">
         <q-td key="id" :props="props">
@@ -33,11 +43,11 @@
         <q-td key="saldo" :props="props">
           <q-chip small square :color="props.row.saldo > 0? 'green' : 'red'">{{ props.row.saldo }}</q-chip>
         </q-td>
-        <q-td key="meses_constante" :props="props">
-          <q-btn size="sm" round dense color="secondary" icon="edit" @click="notificar(`Modificar usuario: ${props.row.id}`)" class="q-mr-xs" />
+        <q-td key="restaurar_pass" :props="props">
+          <q-btn size="sm" round dense color="secondary" icon="edit" :disable="props.row.restaurar_pass || !usuario.admin" @click="restore_pass(props.row.id, props.row.username)" class="q-mr-xs" />
         </q-td>
       </q-tr>
-    </q-table>    
+    </q-table>
     <q-btn icon="update" label="Actualizar" style="width: 100%" @click="update" color="primary" />
   </q-page>
 </template>
@@ -48,12 +58,15 @@
 <script>
 export default {
   name: "PageIndex",
-  props: ["socket"],
+  props: ["socket", "usuario"],
   data() {
     return {
       username: "",
       password: "",
       vip: false,
+      op: false,
+      admin: false,
+      filter: "",
       columns: [
         {
           name: "id",
@@ -83,12 +96,12 @@ export default {
           style: "width: 500px"
         },
         {
-          name: "meses_constante",
+          name: "restaurar_pass",
           required: true,
-          label: "Editar",
+          label: "Restaurar Contraseña",
           align: "left",
-          field: "meses_constante",
-          sortable: true,
+          field: "restaurar_pass",
+          sortable: false,
           style: "width: 500px"
         }
       ],
@@ -107,17 +120,31 @@ export default {
         username: this.username,
         password: this.password,
         vip: this.vip ? true : false,
-        meses_constante: this.vip ? 5 : 4
+        meses_constante: this.vip ? 5 : 4,
+        operario: this.op,
+        admin: this.admin
       };
+      this.socket.post("/adminlog", {
+        fecha: Date.now(),
+        anotacion: `${this.usuario.username} creó al usuario ${cliente.username} con los modificadores: tipo de cliente: ${cliente.vip? 'pionero' : 'normal'}${cliente.operario? ', operario':''}${cliente.admin? ', admin':''}`
+      },(response, jwRes)=>{
+        if(jwRes.statusCode != 200){
+          this.notificar(response);
+        }
+      });
       this.socket.post("/cliente", cliente, (response, jwRes) => {
         if (jwRes.statusCode == 200) {
           this.username = "";
           this.password = "";
           this.vip = false;
+          if(this.usuario.admin){
+            this.op = false;
+            this.admin = false;
+          }
           this.update();
-          this.$q.notify("Usuario creado correctamente");
+          this.notificar("Usuario creado correctamente");
         } else {
-          this.$q.notify(response);
+          this.notificar(response);
         }
       });
     },
@@ -129,6 +156,33 @@ export default {
           if (jwRes.statusCode == 200) {
             this.tableData = response;
           }
+        }
+      );
+    },
+    search(val){
+      this.socket.get(
+        `/cliente?where={"username":{"contains":"${val}"}}&sort=createdAt DESC&limit=30`,
+        null,
+        (response, jwRes) => {
+          if (jwRes.statusCode == 200) {
+            this.tableData = response;
+          }
+        }
+      );
+    },
+    restore_pass(id, username){
+      this.socket.post(
+        "/restorepass",
+        {
+          operario_user: this.usuario.username,
+          cliente_user: username,
+          cliente: id
+        },
+        (response, jwRes) => {
+          if (jwRes.statusCode == 200) {
+            //this.tableData = response;
+          }
+          this.notificar(response);
         }
       );
     }

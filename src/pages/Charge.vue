@@ -48,7 +48,7 @@ var moment = require("moment");
 moment.locale('es');
 export default {
   name: "PageIndex",
-  props: ["socket"],
+  props: ["socket", "usuario"],
   data() {
     return {
       username: "",
@@ -117,7 +117,7 @@ export default {
           if (jwRes.statusCode == 200) {
             if(response.length>0){
               let carga = {
-              operario: 1,
+              operario: this.usuario.id,
               cliente: response[0].id,
               valor_recibido: this.saldo
             };

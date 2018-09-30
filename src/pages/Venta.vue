@@ -32,7 +32,7 @@ var moment = require("moment");
 moment.locale("es");
 export default {
   name: "PageIndex",
-  props: ["socket"],
+  props: ["socket", "usuario"],
   data() {
     return {
       pagination: {
@@ -100,7 +100,8 @@ export default {
           fecha: fecha,
           items: items,
           total: this.total,
-          utilidad: this.utilidad
+          utilidad: this.utilidad,
+          vendedor: this.usuario.id
         },
         (response, jwRes) => {
           if (jwRes.statusCode != 200) {            
