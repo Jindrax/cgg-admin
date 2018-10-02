@@ -8,6 +8,7 @@
         <q-route-tab icon="monetization_on" to="/charge" exact slot="title" :disable="loggued"/>
         <q-route-tab icon="all_inbox" to="/inventario" exact slot="title" :disable="loggued" :hidden="!isAdmin" />
         <q-route-tab icon="shopping_basket" to="/venta" exact slot="title" :disable="loggued"/>
+        <q-route-tab icon="account_balance_wallet" to="/sesionreport" exact slot="title" :disable="loggued" :hidden="!isAdmin" />
       </q-tabs>
     </q-layout-header>
 

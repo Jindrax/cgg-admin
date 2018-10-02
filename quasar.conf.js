@@ -66,14 +66,16 @@ module.exports = function (ctx) {
         'QInput',
         'QToggle',
         'QSelect',
-        'QSearch'
+        'QSearch',
+        'QDatetime'
       ],
       directives: [
         'Ripple'
       ],
       // Quasar plugins
       plugins: [
-        'Notify'
+        'Notify',
+        'Dialog'
       ]
       // iconSet: ctx.theme.mat ? 'material-icons' : 'ionicons'
       // i18n: 'de' // Quasar language
