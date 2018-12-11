@@ -17,6 +17,12 @@
             <q-td key="activo" :props="props">
               <q-chip small square :color="props.row.activo? 'green' : 'red'">{{ props.row.activo? 'Activo' : 'Desconectado' }}</q-chip>
             </q-td>
+            <q-td key="cliente" :props="props">
+              <q-chip small square :color="props.row.cliente!=null? 'green' : 'red'">{{ props.row.cliente != null? props.row.cliente.username : 'Null' }}</q-chip>
+            </q-td>
+            <q-td key="saldo" :props="props">
+              {{ props.row.cliente!=null? props.row.cliente.saldo : 'Null'}}
+            </q-td>
           </q-tr>
         </q-table>
       </q-card-main>
@@ -64,6 +70,24 @@ export default {
           field: "activo",
           sortable: true,
           style: "width: 500px"
+        },
+        {
+          name: "cliente",
+          required: true,
+          label: "Cliente",
+          align: "left",
+          field: "cliente",
+          sortable: true,
+          style: "width: 500px"
+        },
+        {
+          name: "saldo",
+          required: true,
+          label: "Saldo",
+          align: "left",
+          field: "saldo",
+          sortable: true,
+          style: "width: 500px"
         }
       ],
       tableData: null
@@ -74,6 +98,7 @@ export default {
       if (jwRes.statusCode == 200) {
         this.tableData = response;
       }
+      setTimeout(this.monitorear(), 60000);
     });
     this.socket.on("watchUpdate", msg => {
       this.tableData = msg;
@@ -82,6 +107,14 @@ export default {
   methods: {
     notificar(mensaje) {
       this.$q.notify(mensaje);
+    },
+    monitorear() {
+      this.socket.get("/refreshmonitor", null, (response, jwRes) => {
+        if (jwRes.statusCode == 200) {
+          this.tableData = response;
+        }
+        setTimeout(this.monitorear(), 60000);
+      });
     }
   }
 };

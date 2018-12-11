@@ -211,6 +211,7 @@ export default {
           }
         }
       );
+      console.log('Se solicito el reporte');
     },
     formatCurrency(value) {
       return formatter.format(value);

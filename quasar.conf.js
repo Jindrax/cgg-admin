@@ -125,7 +125,6 @@ module.exports = function (ctx) {
       }
     },
     cordova: {
-      // id: 'org.cordova.quasar.app'
     },
     electron: {
       // bundler: 'builder', // or 'packager'

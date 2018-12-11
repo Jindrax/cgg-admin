@@ -42,13 +42,6 @@ Vue.prototype.$q.electron = electron
 
 
 
-Vue.config.devtools = true
-Vue.config.performance = true
-Vue.config.productionTip = false
-
-
-
-console.info('[Quasar] Running ELECTRON with MAT theme.')
 
 
 

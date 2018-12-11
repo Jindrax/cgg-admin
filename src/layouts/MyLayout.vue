@@ -9,6 +9,7 @@
         <q-route-tab icon="all_inbox" to="/inventario" exact slot="title" :disable="loggued" :hidden="!isAdmin" />
         <q-route-tab icon="shopping_basket" to="/venta" exact slot="title" :disable="loggued"/>
         <q-route-tab icon="account_balance_wallet" to="/sesionreport" exact slot="title" :disable="loggued" :hidden="!isAdmin" />
+        <q-route-tab icon="library_books" to="/inventoryreport" exact slot="title" :disable="loggued" :hidden="!isAdmin" />
       </q-tabs>
     </q-layout-header>
 
@@ -23,7 +24,7 @@ var socketIOClient = require("socket.io-client");
 var sailsIOClient = require("sails.io.js");
 var io = sailsIOClient(socketIOClient);
 io.sails.reconnection = true;
-io.sails.url = "http://lanserver:1337";
+io.sails.url = "https://cggserver.herokuapp.com/";
 
 export default {
   name: "MyLayout",

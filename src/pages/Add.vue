@@ -48,6 +48,9 @@
             <q-td key="saldo" :props="props">
               <q-chip small square :color="props.row.saldo > 0? 'green' : 'red'" @click="modal_saldo(props.row.id)">{{ props.row.saldo }}</q-chip>
             </q-td>
+            <q-td key="sesion_activa" :props="props">
+              <q-btn size="sm" round dense color="red" icon="cancel" :disable="props.row.sesion_activa==null" @click="logoutFromApp(props.row.sesion_activa)" class="q-mr-xs" />
+            </q-td>
             <q-td v-if="usuario.admin" key="restaurar_pass" :props="props">
               <q-btn size="sm" round dense color="secondary" icon="edit" :disable="props.row.restaurar_pass" @click="restore_pass(props.row.id, props.row.username)" class="q-mr-xs" />
             </q-td>
@@ -103,6 +106,11 @@ export default {
         {
           prop: "saldo",
           label: "Saldo",
+          admin: false
+        },
+        {
+          prop: "sesion_activa",
+          label: "Sesion",
           admin: false
         },
         {
@@ -295,6 +303,15 @@ export default {
             console.log("Se cancelo el dialogo");
           });
       }
+    },
+    logoutFromApp(sesion){
+      this.socket.post("/logout", {
+        sesion: sesion.id,
+        fromApp: true
+      }, (response, jwRes)=>{
+        this.notificar(response);
+        this.search(this.filter);
+      });
     }
   }
 };

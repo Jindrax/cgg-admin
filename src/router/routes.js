@@ -10,7 +10,8 @@ const routes = [
       { path: '/charge', component: () => import('pages/Charge.vue'), props: true },
       { path: '/inventario', component: () => import('pages/Inventario.vue'), props: true },
       { path: '/venta', component: () => import('pages/Venta.vue'), props: true },
-      { path: '/sesionreport', component: () => import('pages/SesionReport.vue'), props: true }
+      { path: '/sesionreport', component: () => import('pages/SesionReport.vue'), props: true },
+      { path: '/inventoryreport', component: () => import('pages/InventoryReport.vue'), props: true }
     ]
   }
 ]
