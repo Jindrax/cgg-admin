@@ -17,6 +17,13 @@ module.exports = function (ctx) {
     supportIE: false,
     build: {
       scopeHoisting: true,
+      //Si el entorno es de desarrollo tenemos variables de entorno diferentes
+      env: ctx.dev? {
+        //En caso de desarrollo
+        API_URL: JSON.stringify('http://localhost:1337/')
+      } : {
+        API_URL: JSON.stringify('https://cggserver.herokuapp.com/')
+      },
       // vueRouterMode: 'history',
       // vueCompiler: true,
       // gzip: true,
@@ -67,7 +74,8 @@ module.exports = function (ctx) {
         'QToggle',
         'QSelect',
         'QSearch',
-        'QDatetime'
+        'QDatetime',
+        'QDialog'
       ],
       directives: [
         'Ripple'

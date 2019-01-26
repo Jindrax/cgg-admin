@@ -36,13 +36,19 @@
 <script>
 export default {
   name: "PageIndex",
+  /**
+   * Propiedades desde el componente padre
+   * - socket, puerto de comunicacion con el servidor
+   */
   props: ["socket"],
   data() {
     return {
+      //Elemento de configuracion para la tabla, ver documentacion de q-table
       pagination: {
         sortBy: "equipo",
         rowsPerPage: 0
       },
+      //Elemento de configuracion para la tabla, ver documentacion de q-table
       columns: [
         {
           name: "equipo",
@@ -90,29 +96,44 @@ export default {
           style: "width: 500px"
         }
       ],
+      //Objeto que contiene la informacion para llenar la tabla
       tableData: null
     };
   },
   mounted() {
+    //Peticion al servidor para incluir la aplicacion como monitor de los equipos
     this.socket.get("/watchmonitor", null, (response, jwRes) => {
-      if (jwRes.statusCode == 200) {
+      if (jwRes.statusCode === 200) {
+        //Si la peticion fue correcta, en la respuesta se encuentra la informacion para llenar la tabla
         this.tableData = response;
       }
+      //Se agenda una funcion para actualizar la informacion cada minuto (60.000 ms)
       setTimeout(this.monitorear(), 60000);
     });
+    //Se escucha el evento en el que el servidor notifica sobre cambios en los equipos monitoreados
     this.socket.on("watchUpdate", msg => {
+      //Se actualizan dichos cambios en la tabla
       this.tableData = msg;
     });
   },
   methods: {
+    /**
+     * Funcion para simplificar la notificacion al usuario
+     * @param {String} mensaje notificacion para que vea el usuario
+     */
     notificar(mensaje) {
       this.$q.notify(mensaje);
     },
+    /**
+     * Funcion que solicita al servidor actualizaciones en el estado de los equipos monitoreados
+     */
     monitorear() {
       this.socket.get("/refreshmonitor", null, (response, jwRes) => {
-        if (jwRes.statusCode == 200) {
+        if (jwRes.statusCode === 200) {
+          //En caso de que la peticion sea correcta, se actualiza la informacion de la tabla
           this.tableData = response;
         }
+        //Se agenda la siguiente iteracion de este metodo
         setTimeout(this.monitorear(), 60000);
       });
     }

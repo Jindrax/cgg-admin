@@ -11,7 +11,7 @@
 
 import Vue from 'vue'
 
-import {Quasar,QLayout,QLayoutHeader,QLayoutDrawer,QPageContainer,QPage,QToolbar,QToolbarTitle,QBtn,QIcon,QList,QListHeader,QItem,QItemMain,QItemSide,QTabs,QTab,QTabPane,QRouteTab,QTable,QTh,QTr,QTd,QTableColumns,QChip,QCard,QCardTitle,QCardMain,QCardMedia,QCardSeparator,QCardActions,QField,QInput,QToggle,QSelect,QSearch,QDatetime,Ripple,Notify,Dialog} from 'quasar'
+import {Quasar,QLayout,QLayoutHeader,QLayoutDrawer,QPageContainer,QPage,QToolbar,QToolbarTitle,QBtn,QIcon,QList,QListHeader,QItem,QItemMain,QItemSide,QTabs,QTab,QTabPane,QRouteTab,QTable,QTh,QTr,QTd,QTableColumns,QChip,QCard,QCardTitle,QCardMain,QCardMedia,QCardSeparator,QCardActions,QField,QInput,QToggle,QSelect,QSearch,QDatetime,QDialog,Ripple,Notify,Dialog} from 'quasar'
 
 
-Vue.use(Quasar, { config: {},components: {QLayout,QLayoutHeader,QLayoutDrawer,QPageContainer,QPage,QToolbar,QToolbarTitle,QBtn,QIcon,QList,QListHeader,QItem,QItemMain,QItemSide,QTabs,QTab,QTabPane,QRouteTab,QTable,QTh,QTr,QTd,QTableColumns,QChip,QCard,QCardTitle,QCardMain,QCardMedia,QCardSeparator,QCardActions,QField,QInput,QToggle,QSelect,QSearch,QDatetime},directives: {Ripple},plugins: {Notify,Dialog} })
+Vue.use(Quasar, { config: {},components: {QLayout,QLayoutHeader,QLayoutDrawer,QPageContainer,QPage,QToolbar,QToolbarTitle,QBtn,QIcon,QList,QListHeader,QItem,QItemMain,QItemSide,QTabs,QTab,QTabPane,QRouteTab,QTable,QTh,QTr,QTd,QTableColumns,QChip,QCard,QCardTitle,QCardMain,QCardMedia,QCardSeparator,QCardActions,QField,QInput,QToggle,QSelect,QSearch,QDatetime,QDialog},directives: {Ripple},plugins: {Notify,Dialog} })

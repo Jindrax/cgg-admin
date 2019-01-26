@@ -4,17 +4,17 @@
       <q-card-title>
         Cargar Saldo
       </q-card-title>
-      <q-card-separator />
+      <q-card-separator/>
       <q-card-main>
         <q-field label="Nombre de usuario">
-          <q-input v-model="username" />
+          <q-input v-model="username"/>
         </q-field>
         <br>
         <q-field label="Saldo">
-          <q-input v-model="saldo" />
+          <q-input v-model="saldo"/>
         </q-field>
         <br>
-        <q-btn icon="create" label="Cargar" style="width: 100%" @click="charge" color="primary" />
+        <q-btn icon="create" label="Cargar" style="width: 100%" @click="charge" color="primary"/>
       </q-card-main>
     </q-card>
     <br>
@@ -44,116 +44,130 @@
 </style>
 
 <script>
-var moment = require("moment");
-moment.locale('es');
-export default {
-  name: "PageIndex",
-  props: ["socket", "usuario"],
-  data() {
-    return {
-      username: "",
-      saldo: 0,
-      columns: [
-        {
-          name: "fecha",
-          required: true,
-          label: "Fecha",
-          align: "left",
-          field: "fecha",
-          sortable: true,
-          style: "width: 500px"
-        },
-        {
-          name: "operario",
-          required: true,
-          label: "Operario",
-          align: "left",
-          field: "operario",
-          sortable: false,
-          style: "width: 500px"
-        },
-        {
-          name: "cliente",
-          required: true,
-          label: "Cliente",
-          align: "left",
-          field: "cliente",
-          sortable: true,
-          style: "width: 500px"
-        },
-        {
-          name: "valor",
-          required: true,
-          label: "Valor",
-          align: "left",
-          field: "valor",
-          sortable: true,
-          style: "width: 500px"
-        },
-        {
-          name: "valor_promocional",
-          required: true,
-          label: "Valor Promocional",
-          align: "left",
-          field: "valor_promocional",
-          sortable: true,
-          style: "width: 500px"
-        }
-      ],
-      tableData: null
-    };
-  },
-  mounted() {
-    this.update();
-  },
-  methods: {
-    charge() {
-      this.socket.get(
-        "/cliente",
-        {
-          username: this.username
-        },
-        (response, jwRes) => {
-          if (jwRes.statusCode == 200) {
-            if(response.length>0){
-              let carga = {
-              operario: this.usuario.id,
-              cliente: response[0].id,
-              valor_recibido: this.saldo
-            };
-            this.socket.post("/addcredit", carga, (response, jwRes) => {
-              if (jwRes.statusCode == 200) {
-                this.username = "";
-                this.saldo = 0;
-              }
-              this.update();
-              this.$q.notify(response);
-            });
-            }else{
-              this.username = "";
-              this.saldo = 0;
-              this.$q.notify("El cliente no se encuentra registrado en el sistema");
-            }
-          } else {
+  //Libreria en nodejs para el manejo del tiempo
+  const moment = require("moment");
+  //Configuracion de localizacion
+  moment.locale('es');
+  export default {
+    name: "PageIndex",
+    /**
+     * Propiedades desde el componente padre
+     * - socket, puerto de comunicacion con el servidor
+     * - usuario, objeto con la informacion del usuario
+     */
+    props: ["socket", "usuario"],
+    data() {
+      return {
+        //Nombre de usuario del cliente al que se desea hacer una recarga
+        username: "",
+        //Saldo que desea cargar al cliente
+        saldo: 0,
+        //Elemento de configuracion de la tabla, ver documentacion q-table
+        columns: [
+          {
+            name: "fecha",
+            required: true,
+            label: "Fecha",
+            align: "left",
+            field: "fecha",
+            sortable: true,
+            style: "width: 500px"
+          },
+          {
+            name: "operario",
+            required: true,
+            label: "Operario",
+            align: "left",
+            field: "operario",
+            sortable: false,
+            style: "width: 500px"
+          },
+          {
+            name: "cliente",
+            required: true,
+            label: "Cliente",
+            align: "left",
+            field: "cliente",
+            sortable: true,
+            style: "width: 500px"
+          },
+          {
+            name: "valor",
+            required: true,
+            label: "Valor",
+            align: "left",
+            field: "valor",
+            sortable: true,
+            style: "width: 500px"
+          },
+          {
+            name: "valor_promocional",
+            required: true,
+            label: "Valor Promocional",
+            align: "left",
+            field: "valor_promocional",
+            sortable: true,
+            style: "width: 500px"
+          }
+        ],
+        //Objeto que contiene la informacion de la tabla
+        tableData: null
+      };
+    },
+    mounted() {
+      this.update();
+    },
+    methods: {
+      /**
+       * Funcion que intenta cargar saldo al cliente que lo solicita
+       */
+      charge() {
+        //Objeto que se enviara en la peticion al servidor
+        let carga = {
+          cliente: this.username,
+          valor_recibido: this.saldo
+        };
+        this.socket.post("/addcredit", carga, (response, jwRes) => {
+          //Limpiamos las variables
+          this.username = "";
+          this.saldo = 0;
+          if (jwRes.statusCode === 200) {
+            //Si la peticion fue exitosa actualizamos la informacion
+            this.update();
             this.$q.notify(response);
+          } else {
+            this.$q.notify("El cliente no se encuentra registrado en el sistema");
           }
-        }
-      );
-    },
-    update() {
-      this.socket.get(
-        "/cobro?sort=createdAt%20DESC&limit=30&populate=operario,cliente",
-        null,
-        (response, jwRes) => {
-          if (jwRes.statusCode == 200) {
-            this.tableData = response;
+        });
+      },
+      /**
+       * Funcion que actualiza la informacion de la tabla
+       */
+      update() {
+        this.socket.get(
+          '/db/cobro/buscar',
+          {
+            consulta: {
+              sort: 'createdAt DESC',
+              limit: 30
+            }
+          },
+          (response, jwRes) => {
+            if (jwRes.statusCode === 200) {
+              //Si la peticion fue exitosa actualizamos la tabla
+              this.tableData = response;
+            }
           }
-        }
-      );
-    },
-    formatFecha(fecha) {
-      return moment(fecha).format("LLL");
+        );
+      },
+      /**
+       * Funcion que formatea la fecha, ver documentacion de moment.js
+       * @param fecha Fecha en formato unix time stamp
+       * @returns {string} Fecha formateada
+       */
+      formatFecha(fecha) {
+        return moment(fecha).format("LLL");
+      }
     }
-  }
-};
+  };
 </script>

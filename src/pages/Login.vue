@@ -24,6 +24,11 @@
 <script>
 export default {
   name: "Login",
+  /**
+   * Propiedades desde el componente padre
+   * - socket, puerto de comunicacion con el servidor
+   * - usuario, objeto que contiene la informacion del usuario
+   */
   props: ['socket', 'usuario'],
   data(){
     return {
@@ -33,9 +38,11 @@ export default {
   },
   methods:{
     login(username, password){
+      //Enviamos como evento al componente padre la solicitud y los datos para iniciar la sesion
       this.$emit('login', {username: username, password: password});
     },
     logout(){
+      //Enviamos como evento al componente padre la solicitud de cerrar sesion
       this.$emit('logout');
     }
   }
