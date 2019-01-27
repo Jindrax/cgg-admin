@@ -15,6 +15,8 @@
                      :hidden="!isAdmin"/>
         <q-route-tab icon="library_books" to="/inventoryreport" exact slot="title" :disable="loggued"
                      :hidden="!isAdmin"/>
+        <q-route-tab icon="settings" to="/config" exact slot="title" :disable="loggued"
+                     :hidden="!isAdmin"/>
       </q-tabs>
     </q-layout-header>
 
