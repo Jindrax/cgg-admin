@@ -18,7 +18,8 @@ module.exports = function (ctx) {
     build: {
       scopeHoisting: true,
       //Si el entorno es de desarrollo tenemos variables de entorno diferentes
-      env: ctx.dev? {
+      //ctx.dev
+      env: false? {
         //En caso de desarrollo
         API_URL: JSON.stringify('http://localhost:1337/')
       } : {

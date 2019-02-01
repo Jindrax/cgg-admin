@@ -107,6 +107,15 @@
             style: "width: 500px"
           },
           {
+            name: "concepto",
+            required: true,
+            label: "Concepto",
+            align: "left",
+            field: "concepto",
+            sortable: true,
+            style: "width: 500px"
+          },
+          {
             name: "operario",
             required: true,
             label: "Operario",
