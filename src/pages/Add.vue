@@ -430,7 +430,7 @@ export default {
       this.socket.post(
         "/logout",
         {
-          sesion: sesion.id,
+          sesion: sesion,
           fromApp: true
         },
         response => {
